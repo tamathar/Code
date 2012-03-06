@@ -9,5 +9,6 @@ int main()
     	ScatterData<double> c;
    
     	c = p+a;
-	c += p;
+		c += p;
+		c[0] = p;
 }
