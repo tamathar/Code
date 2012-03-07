@@ -18,22 +18,22 @@ class VectorData
 	VectorData(int n);																//create a zero-filled vector of size n
 	VectorData(T *a,int n);															//create vector of size n from a[]
 	
-	~Vector();																		//deletes dynamic array
+	~VectorData();																		//deletes dynamic array
 
 	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-Core Functions=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
 	int				size			() const { return length;}						//return length
 	void			insert			(const T & element);							//insert element
-	void			remove			(const T & element);							//remove element
-	int				getUsage		() const { return currentUsage;}				//return currentUsage
-	void			incUse			() { currentUsage++;}							//add 1 to currentUsage
-	void			decUse			() { currentUsage--;}							//subtract 1 from currentUsage 
+	int				getUsage		() const { return currentUse;}				//return currentUsage
+	void			incUse			() { currentUse++;}							//add 1 to currentUsage
+	void			decUse			() { currentUse--;}							//subtract 1 from currentUsage 
 	
 	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-Basic Functions=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 	
 	VectorData<T> 	addition		(const VectorData<T> & other) const;			//element-wise addition of zero-extended vectors
 	T 				dotMultiply		(const VectorData<T> & other) const;			//A * B - dot product of two vectors, new vector is size of shortest
 	VectorData<T>	scalarMultiply	(const T & scalar) const; 						//A * x - scalar multiplication of vector and a scalar T
+	void			print			(ostream & os);									//print the array for debugging
 
 
 	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-Overloaders=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -49,7 +49,7 @@ class VectorData
 	int arraySize;
 	int currentUse;
 	T * vector;
-}
+};
 
 	
 /*=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*/
@@ -102,7 +102,7 @@ VectorData<T>::VectorData(T *a,int n)
 }
 
 template <class T>
-VectorData<T>::~Vector()
+VectorData<T>::~VectorData()
 {
 	delete []vector;
 }
@@ -140,10 +140,10 @@ VectorData<T> VectorData<T>::addition (const VectorData<T> & other) const
 	else
 		tempLength = other.size();
 		
-	VectorData<T> temp();
+	VectorData<T> temp;
 	
 	for(int i = 0; i < tempLength; i++)
-		temp.insert(vector[i] + other.vector[i]);
+		temp.insert(this[i] + other[i]);
 
 	return temp;
 }
@@ -154,7 +154,7 @@ T VectorData<T>::dotMultiply (const VectorData<T> & other) const
 	T answer = 0;
 	
 	for(int i = 0; i < size() || i < other.size(); i++)
-		answer += vector[i] * other.vector[i];
+	{	answer += this[i] * other[i]; cout << this[i] << " " << other[i] << endl;}
 
 	return answer;
 }
@@ -165,11 +165,19 @@ VectorData<T> VectorData<T>::scalarMultiply (const T & scalar) const
 	VectorData<T> temp(*this);
 	
 	for(int i = 0; i < size(); i++)
-		temp.vector[i] *= scalar;
+		temp[i] *= scalar;
 		
 	return temp;
 }
 
+template <class T>
+void VectorData<T>::print (ostream & os)
+{
+	os << "(";
+	for(int i = 0; i < length; i++)
+		os << (*this)[i] << ",";
+	os << ")";
+}
 
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-Overloaders=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
@@ -193,9 +201,9 @@ const VectorData<T> & VectorData<T>::operator=(const VectorData<T> & other)
 template <class T>
 T & VectorData<T>::operator[](int index) const
 {
-	if(index < 0 || index > size())
-		return 0;
-	
+	//if(index < 0 || index > size())
+		//;//return 0;
+		
 	return vector[index];
 }
 	
