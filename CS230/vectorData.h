@@ -3,7 +3,7 @@
 using namespace std;
 
 /*=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*/
-/*										Vector Data -	Declarations												*/
+/*										Vector Data -	Declarations											*/
 /*=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*/
 
 template <class T>
@@ -14,38 +14,32 @@ class VectorData
 	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-Constructors/Destructor=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
 	VectorData();																	//Default
+	VectorData(const VectorData & other);											//Copy constructor
 	VectorData(int n);																//create a zero-filled vector of size n
 	VectorData(T *a,int n);															//create vector of size n from a[]
 	
 	~Vector();																		//deletes dynamic array
 
+	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-Core Functions=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+
+	int				size			() const { return length;}						//return length
+	void			insert			(const T & element);							//insert element
+	void			remove			(const T & element);							//remove element
+	int				getUsage		() const { return currentUsage;}				//return currentUsage
+	void			incUse			() { currentUsage++;}							//add 1 to currentUsage
+	void			decUse			() { currentUsage--;}							//subtract 1 from currentUsage 
+	
 	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-Basic Functions=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-
-
-	int size();																		//number of elements in the vector
-	double magnitude();																	//Euclidean norm of the vector
-	#ifdef DEBUG
-	const VectorData<T> & implementation();											//DEBUG only, returns underlying implementation, see below
-	#endif	
-	int useCount();																	//number of "co-owners"
+	
+	VectorData<T> 	addition		(const VectorData<T> & other) const;			//element-wise addition of zero-extended vectors
+	T 				dotMultiply		(const VectorData<T> & other) const;			//A * B - dot product of two vectors, new vector is size of shortest
+	VectorData<T>	scalarMultiply	(const T & scalar) const; 						//A * x - scalar multiplication of vector and a scalar T
 
 
 	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-Overloaders=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 	
-	const VectorData<T> & operator=(const VectorData<T> & other);					//assignment op
-
-	      VectorData<T>   operator+(const VectorData<T> & other) const;
-	const VectorData<T> & operator+=(const VectorData<T> & other);					//element-wise addition of zero-extended vectors, new vector is size of longest operand
-
-	      VectorData<T>   operator*(const VectorData<T> & other) const;				//dot product of two vectors, new vector is size of shortest
-
-		  VectorData<T>   operator*(int scalar) const;
-	const VectorData<T> & operator*=(int scalar);									//scalar multiplication of vector and a scalar T
-
-	bool operator==(const VectorData<T> & other) const;								//A exactly equals B
-	bool operator!=(const VectorData<T> & other) const;								//A does not equal B
-	
-	 T & operator[](int index) const;											//if 0≤i<size refers to ith element, otherwise 0, both l- and r-value
+	const 	VectorData<T> & operator=(const VectorData<T> & other);					//assignment op	
+	 T & 	operator[](int index) const;											//if 0≤i<size refers to ith element, otherwise 0, both l- and r-value
 
 
 	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-Private Data=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -57,12 +51,13 @@ class VectorData
 	T * vector;
 }
 
-//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-Global Handler=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-VectorData<T> operator*(int scalar, const VectorData<T> vector) {return vector*scalar;}
 	
 /*=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*/
 /*										Vector Data -	Definitions												*/
 /*=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*/	
+
+
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-Constructors/Destructor=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 	
 template <class T>	
 VectorData<T>::VectorData()
@@ -71,6 +66,17 @@ VectorData<T>::VectorData()
 	 currentUse(1)
 {
 	vector = new T[arraySize];
+}
+
+template <class T>
+VectorData<T>::VectorData(const VectorData<T> & other)
+	:length(other.length),
+	 arraySize(other.arraySize),
+	 currentUse(1)
+{
+	vector = new T[arraySize];
+	for(int i = 0; i < length; i++)
+		vector[i] = other.vector[i];
 }
 
 template <class T>
@@ -101,36 +107,67 @@ VectorData<T>::~Vector()
 	delete []vector;
 }
 
+
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-Core Functions=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+
+template <class T>
+void VectorData<T>::insert(const T & element)
+{
+	if(length == arraySize)
+	{
+		arraySize *= 2;
+		T *temp = new T[arraySize];
+		for(int i = 0; i < length; i++)
+			temp[i] = vector[i];
+		
+		delete []vector;
+		vector = temp;
+	}
+	
+	vector[length++] = element;
+}
+
+
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-Basic Functions=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
 template <class T>
-int VectorData<T>::size()
+VectorData<T> VectorData<T>::addition (const VectorData<T> & other) const
 {
-	return length;
-}
-
-template <class T>
-double VectorData<T>::magnitude()
-{
-	T temp = 0;
-	for(int i = 0; i < length; i++)
-		temp += pow(this[i], 2);
+	int tempLength;
 	
-	return sqrt(temp);
+	if(size() > other.size())
+		tempLength = size();
+	else
+		tempLength = other.size();
+		
+	VectorData<T> temp();
+	
+	for(int i = 0; i < tempLength; i++)
+		temp.insert(vector[i] + other.vector[i]);
+
+	return temp;
 }
 
-#ifdef DEBUG
 template <class T>
-VectorData<T> & VectorData<T>::implementation()
+T VectorData<T>::dotMultiply (const VectorData<T> & other) const
 {
-	return *this;	
+	T answer = 0;
+	
+	for(int i = 0; i < size() || i < other.size(); i++)
+		answer += vector[i] * other.vector[i];
+
+	return answer;
 }
-#endif	
 
 template <class T>
-int VectorData<T>::useCount()
+VectorData<T> VectorData<T>::scalarMultiply (const T & scalar) const
 {
-	return currentUse;
+	VectorData<T> temp(*this);
+	
+	for(int i = 0; i < size(); i++)
+		temp.vector[i] *= scalar;
+		
+	return temp;
 }
 
 
@@ -139,37 +176,28 @@ int VectorData<T>::useCount()
 template <class T>
 const VectorData<T> & VectorData<T>::operator=(const VectorData<T> & other)
 {
-	if(this == &other) return *this;					//suicide not allowed
-	
-	arraySize = other.arraySize;
+	if(this == &other)										//Say no to suicide
+		return *this;
+		
+	arraySize = other.arraySize;							//overwrite old dimensions so we're identical
 	length = other.length;
 	
 	delete []vector;
+	vector = new T[arraySize];
+	for(int i = 0; i < length; i ++)					//remake the data in the image of other
+		vector[i] = other.vector[i];
+	
+	return *this;
 }
 
 template <class T>
-      VectorData<T>   VectorData<T>::operator+(const VectorData<T> & other) const;
-
-template <class T>
-const VectorData<T> & VectorData<T>::operator+=(const VectorData<T> & other);					//element-wise addition of zero-extended vectors, new vector is size of longest operand
-
-template <class T>
-      VectorData<T>   VectorData<T>::operator*(const VectorData<T> & other) const;				//dot product of two vectors, new vector is size of shortest
-
-template <class T>
-	  VectorData<T>   VectorData<T>::operator*(int scalar) const;
-
-template <class T>
-const VectorData<T> & VectorData<T>::operator*=(int scalar);									//scalar multiplication of vector and a scalar T
-
-template <class T>
-bool VectorData<T>::operator==(const VectorData<T> & other) const;								//A exactly equals B
-
-template <class T>
-bool VectorData<T>::operator!=(const VectorData<T> & other) const;								//A does not equal B
-
-template <class T>
-T & VectorData<T>::operator[](int index) const;		
+T & VectorData<T>::operator[](int index) const
+{
+	if(index < 0 || index > size())
+		return 0;
+	
+	return vector[index];
+}
 	
 	
 	
