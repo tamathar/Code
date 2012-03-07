@@ -10,8 +10,7 @@ int main()
 	VectorData<int> vd3(5);
 	VectorData<int> vd4(data, 10);
 	VectorData<int> vd2(vd4);
-	
-	cout << vd2[0];
+
 
 	vd1.print(cout);
 	cout << endl;
