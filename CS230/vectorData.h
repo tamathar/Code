@@ -143,7 +143,7 @@ VectorData<T> VectorData<T>::addition (const VectorData<T> & other) const
 	VectorData<T> temp;
 	
 	for(int i = 0; i < tempLength; i++)
-		temp.insert(this[i] + other[i]);
+		temp.insert( (*this)[i] + other[i]);
 
 	return temp;
 }
@@ -154,7 +154,7 @@ T VectorData<T>::dotMultiply (const VectorData<T> & other) const
 	T answer = 0;
 	
 	for(int i = 0; i < size() || i < other.size(); i++)
-	{	answer += this[i] * other[i]; cout << this[i] << " " << other[i] << endl;}
+		answer +=  (*this)[i]* other[i];
 
 	return answer;
 }
@@ -165,7 +165,10 @@ VectorData<T> VectorData<T>::scalarMultiply (const T & scalar) const
 	VectorData<T> temp(*this);
 	
 	for(int i = 0; i < size(); i++)
+	{
 		temp[i] *= scalar;
+		cout << temp[i];
+	}
 		
 	return temp;
 }
@@ -201,8 +204,8 @@ const VectorData<T> & VectorData<T>::operator=(const VectorData<T> & other)
 template <class T>
 T & VectorData<T>::operator[](int index) const
 {
-	//if(index < 0 || index > size())
-		//;//return 0;
+	if(index < 0 || index > size())
+		return 0;
 		
 	return vector[index];
 }
