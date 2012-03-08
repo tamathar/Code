@@ -43,7 +43,7 @@ TComplex::TComplex(const TComplex & otherComplex)
 
 /**
   * \brief  Adds two values of type TComplex.
-  * \param[in] oper The TComplex object on the right side of the operand.
+  * \param[in] oper The TComplex object on the right side of the operator.
   * \param[out] result The sum of *this and oper.
   */
 TComplex TComplex::operator+(const TComplex & oper) const
@@ -55,7 +55,7 @@ TComplex TComplex::operator+(const TComplex & oper) const
 }
 
 /**
-  * \brief  Subtract the TComplex value on the right from the TComplex on the left of the operand.
+  * \brief  Subtract the TComplex value on the right from the TComplex on the left of the operator.
   * \param[in] oper The TComplex object on the right side of the operand that will be subtracted from the other.
   * \param[out] result The difference of *this and oper.
   */
@@ -69,7 +69,7 @@ TComplex TComplex::operator-(const TComplex & oper) const
 
 /**
   * \brief  Multiplies two values of type TComplex.
-  * \param[in] oper The TComplex object on the right side of the operand.
+  * \param[in] oper The TComplex object on the right side of the operator.
   * \param[out] result The product of *this and oper.
   */
 TComplex TComplex::operator*(const TComplex & oper) const
