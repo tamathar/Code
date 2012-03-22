@@ -1,15 +1,16 @@
 #include <iostream>
-#include "vectorData.h"
+#include "VectorData.h"
 using namespace std;
 
 int main()
 {
 	int data[10] = {0,1,2,3,4,5,6,7,8,9};
+	int data2[11] = {0,1,2,3,4,5,6,7,8,9,99};
 
 	VectorData<int> vd1;
 	VectorData<int> vd3(5);
 	VectorData<int> vd4(data, 10);
-	VectorData<int> vd2(vd4);
+	VectorData<int> vd2(data2, 11);
 
 
 	vd1.print(cout);
@@ -25,7 +26,6 @@ int main()
 	
 	cout << vd2.size() << endl << vd4.size() << endl;
 
-	vd2.insert(99);
 	vd2.print(cout);
 	cout << endl << vd2.size() << endl;
 	

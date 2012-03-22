@@ -1,4 +1,3 @@
-#include <iostream>
 #include <math.h>
 using namespace std;
 
@@ -23,23 +22,18 @@ class VectorData
 	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-Core Functions=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
 	int				size			() const { return length;}						//return length
-	void			insert			(const T & element);							//insert element
-	int				getUsage		() const { return currentUse;}				//return currentUsage
+	int				useCount		() const { return currentUse;}				//return currentUsage
 	void			incUse			() { currentUse++;}							//add 1 to currentUsage
 	void			decUse			() { currentUse--;}							//subtract 1 from currentUsage 
 	
 	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-Basic Functions=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-	
-	VectorData<T> 	addition		(const VectorData<T> & other) const;			//element-wise addition of zero-extended vectors
-	T 				dotMultiply		(const VectorData<T> & other) const;			//A * B - dot product of two vectors, new vector is size of shortest
-	VectorData<T>	scalarMultiply	(const T & scalar) const; 						//A * x - scalar multiplication of vector and a scalar T
 	void			print			(ostream & os);									//print the array for debugging
 
 
 	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-Overloaders=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 	
 	const 	VectorData<T> & operator=(const VectorData<T> & other);					//assignment op	
-	 T & 	operator[](int index) const;											//if 0≤i<size refers to ith element, otherwise 0, both l- and r-value
+	 T & 	operator[](int index);													//if 0≤i<size refers to ith element, otherwise 0, both l- and r-value
 
 
 	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-Private Data=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -49,12 +43,20 @@ class VectorData
 	int arraySize;
 	int currentUse;
 	T * vector;
+	static T fakeval;
+	
+	//private convenience function
+	void 			insert			(const T & element);
 };
 
 	
 /*=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*/
 /*										Vector Data -	Definitions												*/
 /*=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*/	
+
+//init fakeval
+template <class T>
+T VectorData<T>::fakeval = 0;
 
 
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-Constructors/Destructor=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -108,7 +110,7 @@ VectorData<T>::~VectorData()
 }
 
 
-//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-Core Functions=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-Private Functions=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
 template <class T>
 void VectorData<T>::insert(const T & element)
@@ -119,59 +121,16 @@ void VectorData<T>::insert(const T & element)
 		T *temp = new T[arraySize];
 		for(int i = 0; i < length; i++)
 			temp[i] = vector[i];
-		
+
 		delete []vector;
 		vector = temp;
 	}
-	
+
 	vector[length++] = element;
 }
 
 
-//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-Basic Functions=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-template <class T>
-VectorData<T> VectorData<T>::addition (const VectorData<T> & other) const
-{
-	int tempLength;
-	
-	if(size() > other.size())
-		tempLength = size();
-	else
-		tempLength = other.size();
-		
-	VectorData<T> temp;
-	
-	for(int i = 0; i < tempLength; i++)
-		temp.insert( (*this)[i] + other[i]);
-
-	return temp;
-}
-
-template <class T>
-T VectorData<T>::dotMultiply (const VectorData<T> & other) const
-{
-	T answer = 0;
-	
-	for(int i = 0; i < size() || i < other.size(); i++)
-		answer +=  (*this)[i]* other[i];
-
-	return answer;
-}
-
-template <class T>
-VectorData<T> VectorData<T>::scalarMultiply (const T & scalar) const
-{
-	VectorData<T> temp(*this);
-	
-	for(int i = 0; i < size(); i++)
-	{
-		temp[i] *= scalar;
-		cout << temp[i];
-	}
-		
-	return temp;
-}
 
 template <class T>
 void VectorData<T>::print (ostream & os)
@@ -202,10 +161,11 @@ const VectorData<T> & VectorData<T>::operator=(const VectorData<T> & other)
 }
 
 template <class T>
-T & VectorData<T>::operator[](int index) const
+T & VectorData<T>::operator[](int index)
 {
-	if(index < 0 || index > size())
-		return 0;
+	fakeval = 0;
+	if(index < 0 || index >= size())
+		return fakeval;
 		
 	return vector[index];
 }
