@@ -142,7 +142,7 @@ void Triangle::translate(double dx,double dy)
 
 void Triangle::draw(ostream &os) const
 {
-	os << "Triangle(" << colorList[getColor()];
+	os << "Triangle(" << colorList[getColor()] << ",";
 	
 	for(int i = 0; i < 6; i++)
 	{
@@ -162,11 +162,12 @@ void Triangle::draw(ostream &os) const
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-Constructor=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
 Polygon::Polygon(Color c,double pts[],int n)
-	:Geometry(c), pointCount(n*2)
+	:Geometry(c)
 {	
+	pointCount = n*2;
 	points = new double[pointCount];
 	
-	for(int i = 0; i < pointCount*2; i++)
+	for(int i = 0; i < pointCount; i++)
 		points[i] = pts[i];
 }
 	
@@ -176,7 +177,7 @@ void Polygon::setVertexes(double pts[],int n)
 {
 	delete []points;
 	
-	pointCount = n;
+	pointCount = n*2;
 	points = new double[pointCount];
 	
 	for(int i = 0; i < pointCount; i++)
@@ -218,7 +219,7 @@ void Polygon::translate(double dx,double dy)
 
 void Polygon::draw(ostream &os) const
 {
-	os << "Polygon(" << colorList[getColor()];
+	os << "Polygon(" << colorList[getColor()] << ",";
 	
 	for(int i = 0; i < pointCount; i++)
 	{
