@@ -40,6 +40,11 @@ class Geometry
 	Color				getColor()	 const 			{return color;}					//get the color of the shape	
 	
 	
+	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-Protected Data=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+	protected:
+	static string colorList[8];
+	
+	
 	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-Private Data=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 	private:
 	Color color;
@@ -198,9 +203,35 @@ class Polygon : public Geometry
 	const Polygon & operator=(const Polygon & otherl);
 };
 
+/********************************************************************************************************************************/
+/*											Group (Derived Meta Class) - Declarations											*/
+/********************************************************************************************************************************/
 
+class Group : public Geometry
+{
+	public:
+	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-Constructor/Destructor=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+	
+	Group(Color c,int n,Geometry **list);											//Array of Geometry*
+	~Group();																		//gonna have a dynamic array
+	
+	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-Public Functions=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+	int					getObjectCount() const				{return count;}
+	Geometry *			getObject(int i) 					{return shapes[i];}
+	void 				setObjects(int n,Geometry **list);
+	
+	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-Virtual Functions=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-
+	double				area() const;												//compute the area of the shape
+	double				perimeter() const;											//compute the perimeter of the shape
+	void				translate(double dx,double dy);								//move the shape
+	void				draw(ostream &os) const;									//print a description to os (see below)
+	
+	private:
+	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-Private Data=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-	
+	Geometry** shapes;
+	int count;
+};
 
 
 

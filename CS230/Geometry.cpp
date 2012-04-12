@@ -4,9 +4,8 @@
 using namespace std;
 
 
+string Geometry::colorList[8] = { "BLACK", "RED", "GREEN", "YELLOW", "BLUE", "MAGENTA", "CYAN", "WHITE" };
 
-//FOR PRINTING OUR STRINGS FOR COLORS
-string colorList[8] = { "BLACK", "RED", "GREEN", "YELLOW", "BLUE", "MAGENTA", "CYAN", "WHITE" };
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///********************************************************************************************************************************///
@@ -231,6 +230,88 @@ void Polygon::draw(ostream &os) const
 	
 	os << ")";
 }
+
+/********************************************************************************************************************************/
+/*											Group (Derived Meta Class) - Definitions											*/
+/********************************************************************************************************************************/
+
+
+	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-Constructor/Destructor=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+	//Takes over ownership of the elements of list
+	Group::Group(Color c,int n,Geometry **list)
+		: Geometry(c), count(n)
+	{
+		shapes = new Geometry*[count];
+		
+		for(int i = 0; i < count; i++)
+			shapes[i] = list[i];
+	}
+	
+	Group::~Group()
+	{
+		for(int i = 0; i < count; i++)
+			delete shapes[i];
+		
+		delete []shapes;
+	}
+	
+	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-Public Functions=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-	
+	//Takes over ownership of the elements of list
+	void Group::setObjects(int n,Geometry **list)
+	{
+		for(int i = 0; i < count; i++)
+			delete shapes[i];
+		
+		delete []shapes;
+		
+		shapes = new Geometry*[count];
+		
+		for(int i = 0; i < count; i++)
+			shapes[i] = list[i];
+	}
+	
+	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-Virtual Functions=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+
+	double Group::area() const
+	{
+		double area = 0;
+		
+		for(int i = 0; i < count; i++)
+			area += shapes[i]->area();
+			
+		return area;
+	}
+	
+	double Group::perimeter() const
+	{
+		double perimeter = 0;
+		
+		for(int i = 0; i < count; i++)
+			perimeter += shapes[i]->perimeter();	
+			
+		return perimeter;
+	}
+	
+	void Group::translate(double dx,double dy)
+	{
+		for(int i = 0; i < count; i++)
+			shapes[i]->translate(dx, dy);
+	}
+	
+	void Group::draw(ostream &os) const
+	{
+		os << "Group(" << colorList[getColor()] << "," << count;
+		
+		for(int i = 0; i < count; i++)
+		{
+			os << ",";
+			shapes[i]->draw(os);
+		}
+		
+		os << ")";
+	}
+	
+
 
 
 
