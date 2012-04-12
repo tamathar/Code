@@ -304,9 +304,11 @@ void Polygon::draw(ostream &os) const
 		
 		for(int i = 0; i < count; i++)
 		{
-			cout << ",";
+			os << ",";
 			shapes[i]->draw(os);
 		}
+		
+		os << ")";
 	}
 	
 

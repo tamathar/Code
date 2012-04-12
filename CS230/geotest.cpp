@@ -91,37 +91,49 @@ int main()
 	cout << endl << endl;
 	
 
-	//TOWELL TESTS----------------------------------------------------------------------------
-	cout << "Towell TESTS-----------------------------------------------------------------------------------------------------------" << endl;
-	
-	    double pts[] = {1,1,7,2,3,5,6,8,4,3};
-    Geometry * list[100];
+	//Group TESTS-----------------------------------------------------------------------------------------------------------
+	cout << "Group TESTS-----------------------------------------------------------------------------------------------------------" << endl;
+    Geometry * list[5];
+   	Geometry * list2[5];
     int count = 0;
     list[count++] = new Box(BLUE,0,1,1,0);
-    list[count++] = new Box(CYAN,2,3,4,9);
-    list[count++] = new Circle(WHITE,5,5,3);
-    list[count++] = new Triangle(BLACK,pts);
-    list[count++] = new Polygon(GREEN,pts,5);
+    list[count++] = new Box(BLUE,2,3,4,9);
+    list[count++] = new Circle(BLUE,5,5,3);
+    list[count++] = new Triangle(BLUE,pts);
+    list[count++] = new Polygon(BLUE,pts2,4);
 
-	list[3]
-
-    double distance = 0;
-    double area = 0;
-    stringstream ss;
-    for (int i=0; i<count; i++) {
-        distance += list[i]->perimeter();
-        area += list[i]->area();
-        list[i]->draw(ss); 
-        ss << "\n";
-    }
-    for (int i=0; i<count; i++) {
-        list[i]->translate(10,10);
-        list[i]->draw(ss);
-        ss << "\n";
-    }
-    cout << "distance: " << distance << " area: " << area << "\n";
-    cout << "drawing: " << ss.str();
+	list2[4] = new Group(BLUE, count, list);
+	
+	list2[4]->draw(cout);
+	cout << endl;
+	
+	list2[4]->translate(3,4);
+	list2[4]->draw(cout);
+	cout << endl;
+	
+	//list2[4]->getObject(0)->draw(cout);
+	//cout << endl << list2[4]->getObjectCount() << endl;
+	
+	cout << list2[4]->area() << endl;
+	cout << list2[4]->perimeter() << endl;
 	
 
-	
+	list2[0] = new Box(BLUE,0,1,1,0);
+    list2[1] = new Box(BLUE,2,3,4,9);
+    list2[2] = new Circle(BLUE,5,5,3);
+    list2[3] = new Triangle(BLUE,pts);
+    
+    Group group2(BLUE, count, list2);
+    
+    group2.draw(cout);
+    cout << endl;
+    
+    cout << group2.area() << endl << group2.perimeter() << endl;
+    
+    Group group3(BLUE, 0, list);
+    
+    group3.draw(cout);
+    cout << endl;
+    
+    cout << group3.area() << endl << group3.perimeter() << endl;
 }
