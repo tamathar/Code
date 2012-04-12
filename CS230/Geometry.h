@@ -44,6 +44,10 @@ class Geometry
 	private:
 	Color color;
 	
+	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-Anti-Value Semantics-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+	Geometry(const Geometry & other);
+	const Geometry & operator=(const Geometry & otherl);
+	
 };	
 
 /********************************************************************************************************************************/
@@ -79,6 +83,10 @@ class Box : public Geometry
 	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-Private Data=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-	
 	private:
 	double left, top, right, bottom;
+	
+	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-Anti-Value Semantics-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+	Box(const Box & other);
+	const Box & operator=(const Box & otherl);
 };
 
 /********************************************************************************************************************************/
@@ -112,6 +120,10 @@ class Circle : public Geometry
 	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-Private Data=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-	
 	private:
 	double X, Y, radius;
+	
+	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-Anti-Value Semantics-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+	Circle(const Circle & other);
+	const Circle & operator=(const Circle & otherl);
 };
 
 
@@ -144,6 +156,10 @@ class Triangle : public Geometry
 	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-Private Data=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 	private:
 	double points[6];
+	
+	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-Anti-Value Semantics-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+	Triangle(const Triangle & other);
+	const Triangle & operator=(const Triangle & otherl);
 };
 
 /********************************************************************************************************************************/
@@ -176,6 +192,10 @@ class Polygon : public Geometry
 	private:
 	double *points;
 	int pointCount;
+	
+	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-Anti-Value Semantics-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+	Polygon(const Polygon & other);
+	const Polygon & operator=(const Polygon & otherl);
 };
 
 
