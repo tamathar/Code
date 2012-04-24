@@ -50,7 +50,17 @@ void Box::draw(ostream &os) const
 	os << "Box(" << colorList[getColor()] << "," << left << "," << top << "," << right << "," << bottom << ")";
 }
 	
-
+void Box::bounds(double bounds[]) const
+{
+	if(left < bounds[0])
+		bounds[0] = left;
+	if(top > bounds[1])
+		bounds[1] = top;
+	if(right > bounds[2])
+		bounds[2] = right;
+	if(bottom < bounds[3])
+		bounds[3] = bottom;
+}
 
 /********************************************************************************************************************************/
 /*											Circle (Derived Class) - Definitions												*/
@@ -90,7 +100,17 @@ void Circle::draw(ostream &os) const
 	os << "Circle(" << colorList[getColor()] << ","  << X << "," << Y << "," << radius << ")";
 }
 	
-
+void Circle::bounds(double bounds[]) const
+{
+	if(X-radius < bounds[0])
+		bounds[0] = X-radius;
+	if(Y+radius > bounds[1])
+		bounds[1] = Y+radius;
+	if(X+radius > bounds[2])
+		bounds[2] = X+radius;
+	if(Y-radius < bounds[3])
+		bounds[3] = Y-radius;
+}
 
 /********************************************************************************************************************************/
 /*											Triangle (Derived Class) - Definitions												*/
@@ -116,8 +136,12 @@ double Triangle::area() const
 	for(int i = 0; i < 3; i++)
 		area += (points[2*i]*points[(2*(i+1)+1)%6] - points[(2*i)+1]*points[(2*(i+1))%6]);
 	
+	area /= 2;
 	
-	return area/2;
+	if(area < 0)
+		area *= -1;
+		
+	return area;
 }
 
 double Triangle::perimeter() const
@@ -154,6 +178,23 @@ void Triangle::draw(ostream &os) const
 	os << ")";
 }
 	
+void Triangle::bounds(double bounds[]) const
+{
+	for(int i = 0; i < 3; i++)
+	{
+		if(points[i*2] < bounds[0])
+			bounds[0] = points[i*2];
+		
+		if(points[i*2] > bounds[2])
+			bounds[2] = points[i*2];
+			
+		if(points[i*2 + 1] < bounds[3])
+			bounds[3] = points[i*2+1];
+			
+		if(points[i*2 + 1] > bounds[1])
+			bounds[1] = points[i*2+1];
+	}
+}
 
 /********************************************************************************************************************************/
 /*											Polygon (Derived Class) - Definitions												*/
@@ -193,8 +234,12 @@ double Polygon::area() const
 	for(int i = 0; i < pointCount/2; i++)
 		area += (points[2*i]*points[(2*(i+1)+1)%pointCount] - points[(2*i)+1]*points[(2*(i+1))%pointCount]);
 	
+	area /= 2;
 	
-	return area/2;
+	if(area < 0)
+		return area*-1;
+	
+	return area;
 }
 
 double Polygon::perimeter() const
@@ -219,7 +264,7 @@ void Polygon::translate(double dx,double dy)
 
 void Polygon::draw(ostream &os) const
 {
-	os << "Polygon(" << colorList[getColor()] << ",";
+	os << "Polygon(" << colorList[getColor()] << "," << pointCount/2 << ",";
 	
 	for(int i = 0; i < pointCount; i++)
 	{
@@ -229,6 +274,24 @@ void Polygon::draw(ostream &os) const
 	}
 	
 	os << ")";
+}
+
+void	Polygon::bounds(double bounds[]) const
+{
+	for(int i = 0; i < pointCount/2; i++)
+	{
+		if(points[i*2] < bounds[0])
+			bounds[0] = points[i*2];
+		
+		if(points[i*2] > bounds[2])
+			bounds[2] = points[i*2];
+			
+		if(points[i*2 + 1] < bounds[3])
+			bounds[3] = points[i*2+1];
+			
+		if(points[i*2 + 1] > bounds[1])
+			bounds[1] = points[i*2+1];
+	}
 }
 
 /********************************************************************************************************************************/
@@ -311,9 +374,29 @@ void Polygon::draw(ostream &os) const
 		os << ")";
 	}
 	
+	void Group::bounds(double bounds[]) const
+	{
+		for(int i = 0; i < count; i++)
+			shapes[i]->bounds(bounds);
+	}
+	
+	void Group::setColor(Color newColor)
+	{
+		Geometry::setColor(newColor);
+		
+		for(int i = 0; i < count; i++)
+			shapes[i]->setColor(newColor);
+	}
 
-
-
+	int Group::realCount() const
+	{
+		int total = 0;
+		
+		for(int i = 0; i < count; i ++)
+			total += shapes[i]->realCount();
+			
+		return total;
+	}
 
 
 

@@ -30,21 +30,22 @@ class Geometry
 
 	virtual double		area() const = 0;											//compute the area of the shape
 	virtual double		perimeter() const = 0;										//compute the perimeter of the shape
-	virtual void		translate(double dx,double dy) = 0;							//move the shape
-	virtual void		draw(ostream &os) const = 0;								//print a description to os (see below)
-
+	virtual void			translate(double dx,double dy) = 0;							//move the shape
+	virtual void			draw(ostream &os) const = 0;								//print a description to os (see below)
+	virtual int				realCount()	const {return 1;}
+	virtual void			bounds(double bounds[]) const = 0;
+	virtual void			setColor(Color newColor)	{color = newColor;}				//set the color of the shape
 
 
 	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-Non-Virtual Functions=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-	void				setColor(Color newColor)	{color = newColor;}				//set the color of the shape
+	
 	Color				getColor()	 const 			{return color;}					//get the color of the shape	
 	
 	
 	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-Protected Data=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 	protected:
 	static string colorList[8];
-	
-	
+		
 	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-Private Data=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 	private:
 	Color color;
@@ -84,6 +85,7 @@ class Box : public Geometry
 	double				perimeter() const;											//compute the perimeter of the shape
 	void				translate(double dx,double dy);								//move the shape
 	void				draw(ostream &os) const;									//print a description to os (see below)
+	void			bounds(double bounds[]) const;
 		
 	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-Private Data=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-	
 	private:
@@ -121,6 +123,7 @@ class Circle : public Geometry
 	double				perimeter() const;											//compute the perimeter of the shape
 	void				translate(double dx,double dy);								//move the shape
 	void				draw(ostream &os) const;									//print a description to os (see below)
+	void			bounds(double bounds[]) const;
 	
 	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-Private Data=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-	
 	private:
@@ -157,6 +160,7 @@ class Triangle : public Geometry
 	double				perimeter() const;											//compute the perimeter of the shape
 	void				translate(double dx,double dy);								//move the shape
 	void				draw(ostream &os) const;									//print a description to os (see below)
+	void			bounds(double bounds[]) const;
 	
 	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-Private Data=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 	private:
@@ -192,6 +196,7 @@ class Polygon : public Geometry
 	double				perimeter() const;											//compute the perimeter of the shape
 	void				translate(double dx,double dy);								//move the shape
 	void				draw(ostream &os) const;									//print a description to os (see below)
+	void			bounds(double bounds[]) const;
 	
 	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-Private Data=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-	
 	private:
@@ -226,6 +231,9 @@ class Group : public Geometry
 	double				perimeter() const;											//compute the perimeter of the shape
 	void				translate(double dx,double dy);								//move the shape
 	void				draw(ostream &os) const;									//print a description to os (see below)
+	int				realCount() const;
+	void			bounds(double bounds[]) const;
+	void				setColor(Color newColor);		//set the color of the shape
 	
 	private:
 	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-Private Data=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-	
